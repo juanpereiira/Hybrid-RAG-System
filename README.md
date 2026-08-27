@@ -80,7 +80,7 @@ RAG Evaluation
 
 ## Retrieval Pipeline
 
-### Document Chunking
+### Document Chunking :-
 Documents are divided into smaller chunks using LangChain's RecursiveCharacterTextSplitter.
 
 Current configuration:
@@ -88,28 +88,25 @@ Current configuration:
 Chunk size: 300
 Chunk overlap: 50
 
-### Dense Retrieval
+### Dense Retrieval :-
 
 The system uses: sentence-transformers/all-MiniLM-L6-v2
-
 The generated embeddings are stored in a FAISS index and used for semantic similarity search.
 
-### Sparse Retrieval
+### Sparse Retrieval :-
 
 BM25 is used for keyword-based retrieval.
-
 This helps retrieve documents containing exact terms, technical expressions, and identifiers.
 
-### Hybrid Retrieval
+### Hybrid Retrieval :- 
 
 Dense retrieval and BM25 scores are normalized and combined to produce a hybrid retrieval score.
 
 This combines:
-
 Semantic similarity
 Keyword matching
 
-## Agentic Retrieval
+## Agentic Retrieval 
 
 The retrieval system is exposed through a single tool:
 knowledge_base_search(query)
@@ -126,7 +123,6 @@ External databases
 Unapproved tools
 
 If the knowledge base does not contain enough information, the system returns:
-
 The knowledge base does not contain enough information to answer this question.
 
 ## Language Model
@@ -143,23 +139,8 @@ The system provides an interactive question-answering interface.
 
 Example:
 
-SYSTEM READY
-Ask questions about the knowledge base.
-Type 'exit' or 'quit' to stop.
-
-You: What is RAG?
-
-Assistant:
-RAG combines information retrieval with language generation.
-
-You: What is an embedding?
-
-Assistant:
-Embeddings are numerical representations of text.
-
-You: exit
-
-The system continues accepting questions until the user enters exit or quit.
+<img width="1029" height="359" alt="image" src="https://github.com/user-attachments/assets/65fc80c0-6ea3-4060-b6ea-28ceeb24eb92" />
+<img width="1032" height="325" alt="image" src="https://github.com/user-attachments/assets/0a977923-cd68-4577-a679-98608eb2edae" />
 
 ## Self-Evaluation
 
@@ -167,14 +148,14 @@ After the interactive testing session ends, the system performs LLM-based self-e
 
 The evaluation measures:
 
-Metric	Score
-Retrieval Relevance	/5
-Answer Correctness	/5
-Groundedness	/5
-Completeness	/5
-Overall	/5
+Metric Scores :-
+Retrieval Relevance	- /5
+Answer Correctness - /5
+Groundedness - /5
+Completeness -	/5
+Overall - /5
 
-The evaluation is performed after the complete testing session rather than after every individual question.
+
 
 
 
