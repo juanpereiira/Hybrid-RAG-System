@@ -1,4 +1,4 @@
-<img width="693" height="527" alt="image" src="https://github.com/user-attachments/assets/fbaefb48-be93-4bcd-a545-7af7c947cb90" /># Hybrid RAG System
+
 
 A Retrieval-Augmented Generation (RAG) system for knowledge-base question answering using hybrid retrieval, combining dense vector search and sparse BM25 search with an open-weight language model.
 
