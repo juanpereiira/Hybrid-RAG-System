@@ -22,33 +22,33 @@ The assistant is restricted to the provided knowledge base and is designed not t
 ## System Architecture
 
 ```text
-                                    User Question
-                                          │
-                                          ▼
-                                    Knowledge Base
-                                          │
-                                          ▼
-                                    Document Chunking
-                                          │
-                                  ├───────────────|
-                                  ▼               ▼
-                            Dense Retrieval    BM25 Retrieval
-                                  │               │
-                                  └───────┬───────┘
-                                          ▼
-                                    Hybrid Ranking
-                                          │
-                                          ▼
-                                  Retrieved Context
-                                          │
-                                          ▼
-                                   Qwen2.5-3B-Instruct
-                                          │
-                                          ▼
-                                       Answer
-                                          │
-                                          ▼
-                                   Self-Evaluation
+                                        User Question
+                                              │
+                                              ▼
+                                        Knowledge Base
+                                              │
+                                              ▼
+                                        Document Chunking
+                                              │
+                                      ├───────────────|
+                                      ▼               ▼
+                                Dense Retrieval    BM25 Retrieval
+                                      │               │
+                                      └───────┬───────┘
+                                              ▼
+                                        Hybrid Ranking
+                                              │
+                                              ▼
+                                      Retrieved Context
+                                              │
+                                              ▼
+                                       Qwen2.5-3B-Instruct
+                                              │
+                                              ▼
+                                           Answer
+                                              │
+                                              ▼
+                                       Self-Evaluation
 ```
 ## Technologies Used
 
@@ -69,14 +69,14 @@ The assistant is restricted to the provided knowledge base and is designed not t
 
 The knowledge base contains information about:
 
-Artificial Intelligence
-Large Language Models
-Retrieval-Augmented Generation
-Embeddings
-Document Chunking
-Vector Search
-Hybrid Search
-RAG Evaluation
+-Artificial Intelligence
+-Large Language Models
+-Retrieval-Augmented Generation
+-Embeddings
+-Document Chunking
+-Vector Search
+-Hybrid Search
+-RAG Evaluation
 
 ## Retrieval Pipeline
 
@@ -85,8 +85,8 @@ Documents are divided into smaller chunks using LangChain's RecursiveCharacterTe
 
 Current configuration:
 
-Chunk size: 300
-Chunk overlap: 50
+-Chunk size: 300
+-Chunk overlap: 50
 
 ### Dense Retrieval :-
 
@@ -115,12 +115,12 @@ The agent is restricted to the provided knowledge base.
 
 It is not allowed to use:
 
-Web search
-Wikipedia
-External sources
-URLs
-External databases
-Unapproved tools
+-Web search
+-Wikipedia
+-External sources
+-URLs
+-External databases
+-Unapproved tools
 
 If the knowledge base does not contain enough information, the system returns:
 The knowledge base does not contain enough information to answer this question.
@@ -149,11 +149,11 @@ After the interactive testing session ends, the system performs LLM-based self-e
 The evaluation measures:
 
 Metric Scores :-
-Retrieval Relevance	- /5
-Answer Correctness - /5
-Groundedness - /5
-Completeness -	/5
-Overall - /5
+-Retrieval Relevance	- /5
+-Answer Correctness - /5
+-Groundedness - /5
+-Completeness -	/5
+-Overall - /5
 
 
 
