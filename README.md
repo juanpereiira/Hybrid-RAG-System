@@ -1,4 +1,4 @@
-# Hybrid RAG System
+<img width="693" height="527" alt="image" src="https://github.com/user-attachments/assets/fbaefb48-be93-4bcd-a545-7af7c947cb90" /># Hybrid RAG System
 
 A Retrieval-Augmented Generation (RAG) system for knowledge-base question answering using hybrid retrieval, combining dense vector search and sparse BM25 search with an open-weight language model.
 
@@ -49,6 +49,135 @@ The assistant is restricted to the provided knowledge base and is designed not t
                                           │
                                           ▼
                                    Self-Evaluation
+```
+## Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python | Main programming language |
+| FAISS | Vector search |
+| BM25 | Keyword retrieval |
+| Sentence Transformers | Text embeddings |
+| LangChain | Document chunking |
+| Smolagents | Agentic retrieval |
+| Hugging Face Transformers | LLM inference |
+| Qwen2.5-3B-Instruct | Answer generation |
+| NumPy | Numerical operations |
+| Pandas | Data Handling |
+
+## Knowledge Base
+
+The knowledge base contains information about:
+
+Artificial Intelligence
+Large Language Models
+Retrieval-Augmented Generation
+Embeddings
+Document Chunking
+Vector Search
+Hybrid Search
+RAG Evaluation
+
+## Retrieval Pipeline
+
+### Document Chunking
+Documents are divided into smaller chunks using LangChain's RecursiveCharacterTextSplitter.
+
+Current configuration:
+
+Chunk size: 300
+Chunk overlap: 50
+
+### Dense Retrieval
+
+The system uses: sentence-transformers/all-MiniLM-L6-v2
+
+The generated embeddings are stored in a FAISS index and used for semantic similarity search.
+
+### Sparse Retrieval
+
+BM25 is used for keyword-based retrieval.
+
+This helps retrieve documents containing exact terms, technical expressions, and identifiers.
+
+### Hybrid Retrieval
+
+Dense retrieval and BM25 scores are normalized and combined to produce a hybrid retrieval score.
+
+This combines:
+
+Semantic similarity
+Keyword matching
+
+## Agentic Retrieval
+
+The retrieval system is exposed through a single tool:
+knowledge_base_search(query)
+
+The agent is restricted to the provided knowledge base.
+
+It is not allowed to use:
+
+Web search
+Wikipedia
+External sources
+URLs
+External databases
+Unapproved tools
+
+If the knowledge base does not contain enough information, the system returns:
+
+The knowledge base does not contain enough information to answer this question.
+
+## Language Model
+
+The system uses the open-weight model:
+Qwen/Qwen2.5-3B-Instruct
+
+The model is accessed through the Hugging Face Transformers pipeline.
+The model generates answers using the retrieved knowledge-base context.
+
+## Interactive Testing
+
+The system provides an interactive question-answering interface.
+
+Example:
+
+SYSTEM READY
+Ask questions about the knowledge base.
+Type 'exit' or 'quit' to stop.
+
+You: What is RAG?
+
+Assistant:
+RAG combines information retrieval with language generation.
+
+You: What is an embedding?
+
+Assistant:
+Embeddings are numerical representations of text.
+
+You: exit
+
+The system continues accepting questions until the user enters exit or quit.
+
+## Self-Evaluation
+
+After the interactive testing session ends, the system performs LLM-based self-evaluation.
+
+The evaluation measures:
+
+Metric	Score
+Retrieval Relevance	/5
+Answer Correctness	/5
+Groundedness	/5
+Completeness	/5
+Overall	/5
+
+The evaluation is performed after the complete testing session rather than after every individual question.
+
+
+
 
 
 
