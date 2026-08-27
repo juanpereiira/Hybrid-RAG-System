@@ -1,0 +1,11 @@
+transformers
+torch
+sentence-transformers
+faiss-cpu
+rank-bm25
+langchain-text-splitters
+smolagents
+huggingface-hub
+pandas
+numpy
+python-dotenv
