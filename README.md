@@ -22,33 +22,33 @@ The assistant is restricted to the provided knowledge base and is designed not t
 ## System Architecture
 
 ```text
-                                                  User Question
-                                                        │
-                                                        ▼
-                                                  Knowledge Base
-                                                        │
-                                                        ▼
-                                                  Document Chunking
-                                                        │
-                                                ├───────────────|
-                                                ▼               ▼
-                                          Dense Retrieval    BM25 Retrieval
-                                                │               │
-                                                └───────┬───────┘
-                                                        ▼
-                                                  Hybrid Ranking
-                                                        │
-                                                        ▼
-                                                Retrieved Context
-                                                        │
-                                                        ▼
-                                                 Qwen2.5-3B-Instruct
-                                                        │
-                                                        ▼
-                                                     Answer
-                                                        │
-                                                        ▼
-                                                 Self-Evaluation
+                                                        User Question
+                                                              │
+                                                              ▼
+                                                        Knowledge Base
+                                                              │
+                                                              ▼
+                                                        Document Chunking
+                                                              │
+                                                      ├───────────────|
+                                                      ▼               ▼
+                                                Dense Retrieval    BM25 Retrieval
+                                                      │               │
+                                                      └───────┬───────┘
+                                                              ▼
+                                                        Hybrid Ranking
+                                                              │
+                                                              ▼
+                                                      Retrieved Context
+                                                              │
+                                                              ▼
+                                                       Qwen2.5-3B-Instruct
+                                                              │
+                                                              ▼
+                                                           Answer
+                                                              │
+                                                              ▼
+                                                       Self-Evaluation
 ```
 ## Technologies Used
 
