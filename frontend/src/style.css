@@ -1,0 +1,1022 @@
+/* =========================================================
+   HYVE
+   Global Styles
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   FONTS
+   --------------------------------------------------------- */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+
+/* ---------------------------------------------------------
+   VARIABLES
+   --------------------------------------------------------- */
+
+:root {
+  --bg: #0b0e0d;
+  --side: #101311;
+  --panel: #151817;
+  --hover: #191d1b;
+
+  --text: #f5f3ed;
+  --muted: #97988f;
+  --line: rgba(245, 243, 237, 0.11);
+
+  --acid: #d8ef65;
+}
+
+
+/* ---------------------------------------------------------
+   GLOBAL RESET
+   --------------------------------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  background: var(--bg);
+  color: var(--text);
+
+  font-family: Manrope, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  width: 100%;
+  max-width: 1450px;
+
+  margin: 0 auto;
+
+  padding: 60px 5vw 90px;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+  width: 265px;
+  flex-shrink: 0;
+
+  background: var(--side);
+  border-right: 1px solid var(--line);
+
+  padding: 34px 24px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ---------------------------------------------------------
+   Brand
+   --------------------------------------------------------- */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 58px;
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  background: var(--acid);
+  color: #11150f;
+
+  font-weight: 800;
+}
+
+.brand strong {
+  display: block;
+
+  font-size: 13px;
+  letter-spacing: 0.15em;
+}
+
+.brand small {
+  color: var(--muted);
+
+  font: 9px "DM Mono";
+}
+
+
+/* ---------------------------------------------------------
+   Sidebar Labels
+   --------------------------------------------------------- */
+
+.label,
+.section-title,
+.eyebrow,
+.status em,
+.document small,
+.document label,
+.table-head,
+.metrics-head,
+.metrics-row,
+.method small,
+.chunk-card small {
+  font-family: "DM Mono", monospace;
+}
+
+.label,
+.section-title {
+  color: var(--muted);
+
+  font-size: 10px;
+  letter-spacing: 0.13em;
+
+  text-transform: uppercase;
+}
+
+.label {
+  margin-bottom: 10px;
+}
+
+
+/* ---------------------------------------------------------
+   Navigation
+   --------------------------------------------------------- */
+
+nav {
+  display: grid;
+  gap: 2px;
+}
+
+.nav-item {
+  width: 100%;
+
+  padding: 11px 8px;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--muted);
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  color: var(--acid);
+  background: #151a16;
+}
+
+
+/* ---------------------------------------------------------
+   Sidebar Bottom
+   --------------------------------------------------------- */
+
+.sidebar-bottom {
+  margin-top: auto;
+}
+
+
+/* ---------------------------------------------------------
+   System Status
+   --------------------------------------------------------- */
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 7px 0;
+
+  color: #c9cbc3;
+
+  font-size: 11px;
+}
+
+.status svg {
+  color: var(--acid);
+}
+
+.status em {
+  margin-left: auto;
+
+  color: var(--muted);
+
+  font-size: 9px;
+  font-style: normal;
+}
+
+
+/* ---------------------------------------------------------
+   Sidebar Statistics
+   --------------------------------------------------------- */
+
+.stats {
+  display: flex;
+  gap: 35px;
+
+  margin-top: 18px;
+  padding-top: 15px;
+
+  border-top: 1px solid var(--line);
+}
+
+.stats b {
+  display: block;
+
+  font-size: 23px;
+}
+
+.stats small {
+  color: var(--muted);
+
+  font-size: 10px;
+}
+
+
+/* ---------------------------------------------------------
+   Clear Conversation
+   --------------------------------------------------------- */
+
+.clear {
+  width: 100%;
+
+  margin-top: 22px;
+  padding: 10px;
+
+  background: transparent;
+  border: 1px solid var(--line);
+
+  color: var(--muted);
+
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+
+  cursor: pointer;
+}
+
+.clear:hover {
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.eyebrow {
+  color: var(--acid);
+
+  font-size: 10px;
+  letter-spacing: 0.13em;
+
+  text-transform: uppercase;
+}
+
+.main h1 {
+  max-width: 850px;
+
+  margin: 9px 0 18px;
+
+  font-size: clamp(42px, 5vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.main h1 span {
+  color: var(--acid);
+}
+
+.copy {
+  max-width: 680px;
+
+  color: var(--muted);
+
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.main hr {
+  margin: 44px 0 20px;
+
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+
+/* =========================================================
+   CHAT
+   ========================================================= */
+
+.chat-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(300px, 0.7fr);
+
+  gap: 55px;
+}
+
+
+/* ---------------------------------------------------------
+   Empty Chat
+   --------------------------------------------------------- */
+
+.empty {
+  padding: 48px 30px;
+
+  border: 1px dashed rgba(245, 243, 237, 0.2);
+
+  text-align: center;
+}
+
+.empty strong {
+  font-size: 17px;
+}
+
+.empty p {
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+/* ---------------------------------------------------------
+   Document Upload
+   --------------------------------------------------------- */
+
+.upload-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin: 18px 0;
+
+  padding: 12px;
+
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+
+  background: var(--acid);
+  color: #111;
+
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.06em;
+
+  cursor: pointer;
+}
+
+.upload-button:hover {
+  opacity: 0.9;
+}
+
+.upload-status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  min-width: 0;
+  padding-left: 12px;
+
+  border-left: 1px solid var(--line);
+}
+
+.upload-status strong {
+  color: var(--text);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.upload-status span {
+  color: var(--muted);
+  font: 9px "DM Mono", monospace;
+}
+
+.upload-error {
+  margin: -8px 0 18px;
+
+  padding: 10px 12px;
+
+  color: #ff8f8f;
+  background: rgba(255, 80, 80, 0.08);
+  border: 1px solid rgba(255, 80, 80, 0.2);
+
+  font-size: 11px;
+}
+
+.quick-hints {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+.quick-hints span {
+  padding: 6px 9px;
+
+  color: var(--muted);
+  border: 1px solid var(--line);
+
+  font: 8px "DM Mono", monospace;
+  letter-spacing: 0.08em;
+}
+/* ---------------------------------------------------------
+   Chat Input
+   --------------------------------------------------------- */
+
+.input {
+  display: flex;
+
+  margin-top: 18px;
+
+  background: #252631;
+
+  border-radius: 7px;
+
+  overflow: hidden;
+}
+
+.input input {
+  flex: 1;
+  min-width: 0;
+
+  padding: 17px 20px;
+
+  background: transparent;
+  border: 0;
+
+  outline: 0;
+}
+
+.input button {
+  width: 50px;
+
+  margin: 6px;
+
+  background: #363742;
+  border: 0;
+
+  cursor: pointer;
+}
+
+.input button:hover {
+  background: var(--acid);
+  color: #111;
+}
+
+.input button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.input button:disabled:hover {
+  background: #363742;
+  color: inherit;
+}
+
+
+/* ---------------------------------------------------------
+   Messages
+   --------------------------------------------------------- */
+
+.messages {
+  border-top: 1px solid var(--line);
+}
+
+.message {
+  display: flex;
+  gap: 14px;
+
+  padding: 20px 0;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.message > b {
+  width: 30px;
+  height: 30px;
+
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  background: var(--panel);
+
+  font: 9px "DM Mono";
+}
+
+.message.user > b {
+  background: var(--acid);
+  color: #111;
+}
+
+.message small {
+  color: var(--muted);
+
+  font: 9px "DM Mono";
+}
+
+.message p {
+  margin: 7px 0 0;
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   RETRIEVAL EVIDENCE
+   ========================================================= */
+
+.evidence {
+  padding: 17px;
+  margin-bottom: 14px;
+
+  background: var(--panel);
+
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--acid);
+}
+
+.evidence-top {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 8px;
+}
+
+.evidence-top strong {
+  font-size: 13px;
+}
+
+.evidence-top span,
+.evidence > small {
+  color: var(--muted);
+
+  font: 9px "DM Mono";
+}
+
+.evidence p {
+  color: #c9cbc3;
+
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.score {
+  height: 3px;
+
+  background: #2b302c;
+}
+
+.score i {
+  display: block;
+
+  height: 100%;
+
+  background: var(--acid);
+}
+
+
+/* =========================================================
+   KNOWLEDGE BASE
+   ========================================================= */
+
+.doc-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 14px;
+}
+
+.document {
+  min-height: 190px;
+
+  padding: 22px;
+
+  background: var(--panel);
+
+  border: 1px solid var(--line);
+
+  transition: 0.15s;
+}
+
+.document:hover {
+  background: var(--hover);
+
+  border-color: var(--acid);
+
+  transform: translateY(-2px);
+}
+
+.document small,
+.document label {
+  color: var(--acid);
+
+  font-size: 9px;
+}
+
+.document h2 {
+  margin: 34px 0 10px;
+
+  font-size: 18px;
+}
+
+.document p {
+  color: var(--muted);
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   RETRIEVAL PAGE
+   ========================================================= */
+
+.pipeline {
+  max-width: 760px;
+
+  margin: 45px auto;
+
+  text-align: center;
+}
+
+.pipeline-node,
+.hybrid {
+  padding: 16px;
+
+  background: var(--panel);
+
+  border: 1px solid var(--line);
+
+  font: 10px "DM Mono";
+
+  letter-spacing: 0.08em;
+}
+
+.pipeline > b {
+  display: block;
+
+  padding: 12px;
+
+  color: var(--acid);
+}
+
+.retrieval-sources {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 14px;
+}
+
+.retrieval-card {
+  padding: 25px;
+
+  background: var(--panel);
+
+  border: 1px solid var(--line);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.retrieval-card svg {
+  width: 22px;
+
+  color: var(--acid);
+}
+
+.retrieval-card span,
+.retrieval-card small,
+.hybrid small {
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+.hybrid {
+  border-color: rgba(216, 239, 101, 0.4);
+}
+
+.hybrid strong {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--acid);
+}
+
+.hybrid b,
+.acid {
+  color: var(--acid);
+}
+
+
+/* =========================================================
+   ARCHITECTURE
+   ========================================================= */
+
+.architecture {
+  max-width: 760px;
+
+  margin: auto;
+}
+
+.architecture-step {
+  display: grid;
+
+  grid-template-columns: 55px 1fr;
+
+  gap: 18px;
+
+  padding: 25px 0;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.architecture-step small {
+  color: var(--acid);
+
+  font-size: 10px;
+}
+
+.architecture-step h2 {
+  margin: 0 0 7px;
+
+  font-size: 20px;
+}
+
+.architecture-step p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   EVALUATION
+   ========================================================= */
+
+.evaluation-hero {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 30px;
+
+  padding: 35px;
+
+  background: var(--panel);
+
+  border: 1px solid var(--line);
+}
+
+.evaluation-hero > div:first-child strong {
+  display: block;
+
+  margin: 8px 0;
+
+  color: var(--acid);
+
+  font-size: 54px;
+
+  letter-spacing: -0.05em;
+}
+
+.evaluation-hero p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+
+/* ---------------------------------------------------------
+   Evaluation Method
+   --------------------------------------------------------- */
+
+.method {
+  min-width: 180px;
+
+  align-self: end;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  text-align: right;
+}
+
+.method small {
+  color: var(--muted);
+
+  font-size: 9px;
+}
+
+.method b {
+  font-size: 14px;
+}
+
+
+/* ---------------------------------------------------------
+   Run Evaluation Button
+   --------------------------------------------------------- */
+
+.run-evaluation {
+  padding: 11px 18px;
+
+  background: #000 !important;
+  color: var(--acid) !important;
+
+  border: 1px solid var(--acid);
+
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+}
+
+.run-evaluation:hover {
+  background: var(--acid) !important;
+  color: #000 !important;
+}
+
+.run-evaluation:disabled {
+  background: #000 !important;
+  color: var(--muted) !important;
+
+  border-color: var(--line);
+
+  cursor: not-allowed;
+}
+
+
+/* ---------------------------------------------------------
+   Evaluation Metrics
+   --------------------------------------------------------- */
+
+.metrics {
+  margin-top: 35px;
+
+  border-top: 1px solid var(--line);
+}
+
+.metrics-head,
+.metrics-row {
+  display: grid;
+
+  /* Two columns because the table contains
+     METRIC and SCORE only. */
+  grid-template-columns: 2fr 1fr;
+
+  padding: 15px 10px;
+
+  border-bottom: 1px solid var(--line);
+
+  font-size: 12px;
+}
+
+.metrics-head {
+  color: var(--muted);
+
+  font-size: 9px;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .sidebar {
+    width: 220px;
+  }
+
+  .chat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .upload-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .upload-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .upload-status {
+    width: 100%;
+  }
+  .sidebar {
+    width: 68px;
+
+    padding: 20px 9px;
+  }
+
+  .brand > div:not(.brand-mark),
+  .nav-item span,
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+  }
+
+  .main {
+    padding: 35px 20px 60px;
+  }
+
+  .main h1 {
+    font-size: 42px;
+  }
+
+  .doc-grid,
+  .retrieval-sources {
+    grid-template-columns: 1fr;
+  }
+
+  .evaluation-hero {
+    flex-direction: column;
+  }
+
+  .method {
+    align-self: start;
+
+    text-align: left;
+  }
+
+}

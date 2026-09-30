@@ -1,0 +1,6 @@
+Metric,FAISS Mean,Hybrid Mean,Improvement %
+Retrieval Relevance,2.58,3.42,32.26
+Answer Correctness,3.92,4.33,10.64
+Groundedness,3.75,4.33,15.56
+Completeness,3.42,4.17,21.95
+Overall,3.33,4.17,25.0
