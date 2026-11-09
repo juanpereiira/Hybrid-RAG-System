@@ -13,6 +13,11 @@ const NAV = [
   ["evaluation", "Evaluation", BarChart3]
 ];
 
+const API_BASE_URL =
+  window.huggingface?.variables?.API_URL ||
+  import.meta.env.VITE_API_URL ||
+  "http://127.0.0.1:8000";
+
 function App() {
   const [page, setPage] = useState("chat");
 
@@ -49,7 +54,7 @@ function App() {
 
       try {
           const response = await fetch(
-              "http://127.0.0.1:8000/query/stream",
+              `${API_BASE_URL}/query/stream`,
               {
                   method: "POST",
                   headers: {
@@ -171,7 +176,7 @@ function App() {
     setEvaluating(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/evaluate", {
+      const response = await fetch(`${API_BASE_URL}/evaluate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -343,7 +348,7 @@ function Chat({
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/upload", {
+      const response = await fetch(`${API_BASE_URL}/upload`, {
         method: "POST",
         body: formData
       });

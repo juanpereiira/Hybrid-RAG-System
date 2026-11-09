@@ -1,4 +1,13 @@
 
+---
+title: HYVE
+emoji: 🧠
+colorFrom: green
+colorTo: blue
+sdk: static
+app_build_command: npm install && npm run build
+app_file: dist/index.html
+---
 
 A Retrieval-Augmented Generation (RAG) system for knowledge-base question answering using hybrid retrieval, combining dense vector search and sparse BM25 search with an open-weight language model.
 
