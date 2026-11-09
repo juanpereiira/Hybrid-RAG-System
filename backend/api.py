@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import time
 from collections import defaultdict
 from pydantic import BaseModel, Field
+import json
+from fastapi.responses import StreamingResponse
+
 
 import agent
 
@@ -17,6 +20,7 @@ RATE_LIMITS = {
     "/": (60, 60),
     "/health": (60, 60),
     "/query": (10, 60),
+    "/query/stream": (10, 60),
     "/evaluate": (5, 60),
     "/upload": (5, 600),
 }
@@ -88,6 +92,75 @@ def health(request: Request):
         "status": "healthy"
     }
 
+@app.post("/query/stream")
+def query_stream(request: Request, query: QueryRequest):
+
+    check_rate_limit(request)
+
+    question = query.question.strip()
+
+    if not question:
+        raise HTTPException(
+            status_code=400,
+            detail="Question cannot be empty."
+        )
+
+    def generate():
+
+        try:
+            # Retrieve sources for the frontend
+            results = agent.hybrid_search(
+                question,
+                top_k=4
+            )
+
+            sources = []
+
+            for result in results:
+                sources.append({
+                    "chunk_id": result["id"],
+                    "title": result["title"],
+                    "text": result["text"],
+                    "vector_score": round(
+                        float(result.get("vector_score", 0)), 3
+                    ),
+                    "keyword_score": round(
+                        float(result.get("keyword_score", 0)), 3
+                    ),
+                    "hybrid_score": round(
+                        float(result.get("hybrid_score", 0)), 3
+                    )
+                })
+
+            # Send retrieved sources first
+            yield json.dumps({
+                "type": "sources",
+                "sources": sources
+            }) + "\n"
+
+            # Stream the generated answer
+            for token in agent.stream_assistant(question):
+
+                yield json.dumps({
+                    "type": "token",
+                    "text": token
+                }) + "\n"
+
+            # Tell the frontend generation is complete
+            yield json.dumps({
+                "type": "done"
+            }) + "\n"
+
+        except Exception:
+            yield json.dumps({
+                "type": "error",
+                "message": "Unable to generate the answer."
+            }) + "\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="application/x-ndjson"
+    )
 
 @app.post("/query")
 def query_rag(request: Request, query: QueryRequest):

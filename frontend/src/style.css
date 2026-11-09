@@ -759,6 +759,77 @@ nav {
   color: var(--acid);
 }
 
+/* =========================================================
+   ANSWER GENERATION
+   ========================================================= */
+
+   .markdown-content {
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.markdown-content p {
+    margin: 0 0 12px;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+    padding-left: 24px;
+    margin: 10px 0 16px;
+}
+
+.markdown-content li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+    margin: 16px 0 8px;
+    font-weight: 600;
+}
+
+.markdown-content strong {
+    font-weight: 700;
+}
+
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 0;
+}
+
+.typing-indicator span {
+    width: 7px;
+    height: 7px;
+    background: #d8ef76;
+    border-radius: 50%;
+    animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        opacity: 0.25;
+        transform: translateY(0);
+    }
+
+    30% {
+        opacity: 1;
+        transform: translateY(-5px);
+    }
+}
+
 
 /* =========================================================
    ARCHITECTURE

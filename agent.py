@@ -12,7 +12,8 @@ from docx import Document as DocxDocument
 
 warnings.filterwarnings("ignore")
 from getpass import getpass
-
+import threading
+from transformers import TextIteratorStreamer
 import numpy as np
 import pandas as pd
 import faiss
@@ -710,20 +711,7 @@ model = HFPipelineWrapper(
 
 print("Open-weight LLM connected successfully!")
 
-# ============================================================
-# RAG ASSISTANT
-# ============================================================
-
-def ask_assistant(question):
-
-    # Retrieve information from the knowledge base
-    context = retrieve_context(question)
-
-    messages = [
-
-        {
-            "role": "system",
-            "content": """
+SYSTEM_PROMPT = """
 You are a knowledge base assistant.
 
 Answer questions ONLY using the provided knowledge base.
@@ -746,17 +734,22 @@ STRICT RULES:
    - Use headings when an answer covers multiple topics.
    - Use bold formatting for important terms where appropriate.
    - Leave a blank line between paragraphs and sections.
-
-Example of correct formatting:
-
-   The main components include:
-
-   - Input collection
-   - Preprocessing
-   - Model execution
-   - Post-processing
-   - Validation
 """
+
+# ============================================================
+# RAG ASSISTANT
+# ============================================================
+
+def ask_assistant(question):
+
+    # Retrieve information from the knowledge base
+    context = retrieve_context(question)
+
+    messages = [
+
+        {
+            "role": "system",
+            "content": SYSTEM_PROMPT
         },
 
         {
@@ -786,7 +779,7 @@ Answer using ONLY the knowledge base context.
     # Generate answer
     result = hf_pipeline(
         prompt,
-        max_new_tokens=128,
+        max_new_tokens=512,
         temperature=0.2,
         do_sample=True,
         return_full_text=False
@@ -803,6 +796,76 @@ Answer using ONLY the knowledge base context.
     ).strip()
 
     return answer
+
+def stream_assistant(question):
+
+    # Retrieve information from the knowledge base
+    context = retrieve_context(question)
+
+    messages = [
+        {
+            "role": "system",
+            "content": SYSTEM_PROMPT
+        },
+        {
+            "role": "user",
+            "content": f"""
+Knowledge Base Context:
+
+{context}
+
+Question:
+
+{question}
+
+Answer using ONLY the knowledge base context.
+"""
+        }
+    ]
+
+    # Convert messages to Qwen format
+    prompt = model.tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True
+    )
+
+    # Prepare input tokens
+    inputs = model.tokenizer(
+        prompt,
+        return_tensors="pt"
+    )
+
+    inputs = inputs.to(hf_pipeline.model.device)
+
+    # Create text streamer
+    streamer = TextIteratorStreamer(
+        model.tokenizer,
+        skip_prompt=True,
+        skip_special_tokens=True
+    )
+
+    # Generation parameters
+    generation_params = {
+        **inputs,
+        "streamer": streamer,
+        "max_new_tokens": 512,
+        "temperature": 0.2,
+        "do_sample": True,
+        "pad_token_id": model.tokenizer.eos_token_id
+    }
+
+    # Run generation in a separate thread
+    thread = threading.Thread(
+        target=hf_pipeline.model.generate,
+        kwargs=generation_params
+    )
+
+    thread.start()
+
+    # Yield generated text as it becomes available
+    for new_text in streamer:
+        yield new_text
 
 def evaluate_session(results):
 

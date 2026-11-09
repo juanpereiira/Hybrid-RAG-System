@@ -5,6 +5,8 @@ import {
 } from "lucide-react";
 import "./style.css";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const NAV = [
   ["chat", "Chat", MessageSquare],
@@ -18,6 +20,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [query, setQuery] = useState("");
   const [sources, setSources] = useState([]);
+  const [generating, setGenerating] = useState(false);
 
   //Evaluation State
   const [sessionResults, setSessionResults] = useState([]);
@@ -28,68 +31,133 @@ function App() {
   const [uploadError, setUploadError] = useState("");
 
   const ask = async (value = query) => {
-  const text = value.trim();
-  if (!text) return;
+      const text = value.trim();
+      if (!text || generating) return;
 
-  setMessages(current => [
-    ...current,
-    { role: "user", text }
-  ]);
+      setGenerating(true);
+      setQuery("");
 
-  setQuery("");
+      // Add user question and an empty assistant message
+      setMessages(current => [
+          ...current,
+          { role: "user", text },
+          { role: "assistant", text: "" }
+      ]);
 
-  try {
-    const response = await fetch("http://127.0.0.1:8000/query", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        question: text
-      })
-    });
+      let answerText = "";
+      let retrievedSources = [];
 
-    if (!response.ok) {
-      throw new Error("Backend request failed");
-    }
+      try {
+          const response = await fetch(
+              "http://127.0.0.1:8000/query/stream",
+              {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                      question: text
+                  })
+              }
+          );
 
-    const data = await response.json();
-    // Update retrieved sources
+          if (!response.ok) {
+              throw new Error("Backend request failed.");
+          }
 
-    setSources(data.sources || []);
-    // Store question + context + answer for the session evaluation
-    setSessionResults(current => [
-      ...current,
-      {
-        Question: text,
-        Context: (data.sources || [])
-          .map(source => source.text)
-          .join("\n"),
-        Answer: data.answer
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+
+          let buffer = "";
+
+          const processEvent = (line) => {
+              if (!line.trim()) return;
+
+              const event = JSON.parse(line);
+
+              if (event.type === "sources") {
+                  retrievedSources = event.sources || [];
+                  setSources(retrievedSources);
+              }
+
+              else if (event.type === "token") {
+                  answerText += event.text || "";
+
+                  setMessages(current => {
+                      const updated = [...current];
+
+                      updated[updated.length - 1] = {
+                          ...updated[updated.length - 1],
+                          text: answerText
+                      };
+
+                      return updated;
+                  });
+              }
+
+              else if (event.type === "error") {
+                  throw new Error(
+                      event.message || "Answer generation failed."
+                  );
+              }
+          };
+
+          // Read incoming data progressively
+          while (true) {
+              const { value, done } = await reader.read();
+
+              if (done) break;
+
+              buffer += decoder.decode(value, {
+                  stream: true
+              });
+
+              const lines = buffer.split("\n");
+              buffer = lines.pop();
+
+              for (const line of lines) {
+                  processEvent(line);
+              }
+          }
+
+          // Process remaining buffered data
+          buffer += decoder.decode();
+
+          if (buffer.trim()) {
+              processEvent(buffer);
+          }
+
+          // Save completed interaction for evaluation
+          setSessionResults(current => [
+              ...current,
+              {
+                  Question: text,
+                  Context: retrievedSources
+                      .map(source => source.text)
+                      .join("\n"),
+                  Answer: answerText
+              }
+          ]);
+
+      } catch (error) {
+          console.error("Streaming error:", error);
+
+          setMessages(current => {
+              const updated = [...current];
+
+              updated[updated.length - 1] = {
+                  ...updated[updated.length - 1],
+                  text: answerText
+                      ? answerText + "\n\nUnable to complete the response."
+                      : "Unable to connect to the RAG backend."
+              };
+
+              return updated;
+          });
+
+      } finally {
+          setGenerating(false);
       }
-    ]);
-
-    // Show HYVE answer
-    setMessages(current => [
-      ...current,
-      {
-        role: "assistant",
-        text: data.answer
-      }
-    ]);
-
-  } catch (error) {
-    
-    setMessages(current => [
-      ...current,
-      {
-        role: "assistant",
-        text: "Unable to connect to the RAG backend."
-      }
-    ]);
-
-    console.error(error);
-    }
   };
 
   //RUN SESSION EVALUATION
@@ -175,6 +243,7 @@ function App() {
             setUploading={setUploading}
             uploadError={uploadError}
             setUploadError={setUploadError}
+            generating={generating}
           />
         )}
 
@@ -258,7 +327,8 @@ function Chat({
   uploading,
   setUploading,
   uploadError,
-  setUploadError
+  setUploadError,
+  generating
 }) {  
   
     const uploadDocument = async (event) => {
@@ -365,14 +435,35 @@ function Chat({
             </div>
           ) : (
             <div className="messages">
-              {messages.map((m,i)=>(
+              {messages.map((m, i) => (
                 <div className={`message ${m.role}`} key={i}>
-                  <b>{m.role==="user" ? "YOU":"H"}</b>
-                  <div><small>{m.role==="user" ? "QUESTION":"HYVE"}</small><p>{m.text}</p></div>
+                  <b>{m.role === "user" ? "YOU" : "H"}</b>
+
+                  <div>
+                    <small>
+                      {m.role === "user" ? "QUESTION" : "HYVE"}
+                    </small>
+
+                    {m.role === "assistant" && !m.text && generating ? (
+                      <div className="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                    ) : m.role === "assistant" ? (
+                      <div className="markdown-content">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {m.text}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p>{m.text}</p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
-          )}
+        )}
 
           <div className="input">
             <input
@@ -384,12 +475,12 @@ function Chat({
                   ? `Ask about ${knowledgeBase.filename}...`
                   : "Upload a document to start asking questions..."
               }
-              disabled={!knowledgeBase || uploading}
+              disabled={!knowledgeBase || uploading || generating}
             />
 
             <button
               onClick={() => ask()}
-              disabled={!knowledgeBase || uploading}
+              disabled={!knowledgeBase || uploading || generating}
             >
               <Send size={17} />
             </button>
