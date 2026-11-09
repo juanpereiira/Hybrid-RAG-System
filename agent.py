@@ -486,8 +486,6 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 if not HF_TOKEN:
     raise ValueError("HF_TOKEN not found in .env file.")
 
-print("HF_TOKEN loaded successfully.")
-
 #CREATE RETRIEVAL TOOL
 
 @tool #decorator tells the agent: Make this python function available as a tool that the agent can decide to call.
@@ -741,6 +739,23 @@ STRICT RULES:
    "The knowledge base does not contain enough information
    to answer this question."
 7. Give a concise, natural-language answer.
+8. Structure all answers clearly using proper formatting.
+   - Each bullet point must start on a new line.
+   - Never combine multiple bullet points into one paragraph.
+   - Use a separate line for each numbered list item.
+   - Use headings when an answer covers multiple topics.
+   - Use bold formatting for important terms where appropriate.
+   - Leave a blank line between paragraphs and sections.
+
+Example of correct formatting:
+
+   The main components include:
+
+   - Input collection
+   - Preprocessing
+   - Model execution
+   - Post-processing
+   - Validation
 """
         },
 

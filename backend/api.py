@@ -1,6 +1,8 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+import time
+from collections import defaultdict
+from pydantic import BaseModel, Field
 
 import agent
 
@@ -11,23 +13,68 @@ app = FastAPI(
     version="1.0.0"
 )
 
+RATE_LIMITS = {
+    "/": (60, 60),
+    "/health": (60, 60),
+    "/query": (10, 60),
+    "/evaluate": (5, 60),
+    "/upload": (5, 600),
+}
+
+request_history = defaultdict(list)
+
+
+def check_rate_limit(request: Request):
+    path = request.url.path
+
+    if path not in RATE_LIMITS:
+        return
+
+    max_requests, window = RATE_LIMITS[path]
+
+    # Use client IP as the limiter key
+    client_ip = request.client.host if request.client else "unknown"
+    key = f"{client_ip}:{path}"
+
+    now = time.time()
+
+    # Keep only requests inside the current window
+    request_history[key] = [
+        timestamp
+        for timestamp in request_history[key]
+        if now - timestamp < window
+    ]
+
+    if len(request_history[key]) >= max_requests:
+        raise HTTPException(
+            status_code=429,
+            detail="Too many requests. Please try again later.",
+            headers={"Retry-After": str(window)}
+        )
+
+    request_history[key].append(now)
+
 
 # Allow the React development server to communicate with FastAPI
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
 class QueryRequest(BaseModel):
-    question: str
+    question: str = Field(
+        ...,
+        min_length=1,
+        max_length=4000
+    )
 
 
 @app.get("/")
-def root():
+def root(request: Request):
+    check_rate_limit(request)
     return {
         "name": "HYVE",
         "status": "online"
@@ -35,16 +82,18 @@ def root():
 
 
 @app.get("/health")
-def health():
+def health(request: Request):
+    check_rate_limit(request)
     return {
         "status": "healthy"
     }
 
 
 @app.post("/query")
-def query_rag(request: QueryRequest):
+def query_rag(request: Request, query: QueryRequest):
+    check_rate_limit(request)
 
-    question = request.question.strip()
+    question = query.question.strip()
 
     if not question:
         raise HTTPException(
@@ -88,41 +137,53 @@ def query_rag(request: QueryRequest):
         }
 
     except Exception as error:
+        print("Query processing failed.")
+
         raise HTTPException(
             status_code=500,
-            detail=str(error)
+            detail="Unable to process the query."
         )
 
 class EvaluationRequest(BaseModel):
-    session: list
+    session: list = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
 
 
 @app.post("/evaluate")
-def evaluate(request: EvaluationRequest):
-    if not request.session:
+def evaluate(request: Request, eval_request: EvaluationRequest):
+    check_rate_limit(request)
+
+    if not eval_request.session:
         raise HTTPException(
             status_code=400,
             detail="No questions in the current session."
         )
 
     try:
-        evaluation = agent.evaluate_session(request.session)
+        evaluation = agent.evaluate_session(eval_request.session)
 
         return {
             "evaluation": evaluation,
-            "questions_evaluated": len(request.session)
+            "questions_evaluated": len(eval_request.session)
         }
 
     except Exception as error:
+        print("Evaluation failed.")
+
         raise HTTPException(
             status_code=500,
-            detail=str(error)
+            detail="Unable to evaluate the session."
         )
 
 @app.post("/upload")
 async def upload_document(
+    request: Request,
     file: UploadFile = File(...)
 ):
+    check_rate_limit(request)
 
     if not file.filename:
         raise HTTPException(
@@ -149,8 +210,15 @@ async def upload_document(
         )
 
     try:
+        
+        MAX_FILE_SIZE = 25 * 1024 * 1024
 
         contents = await file.read()
+        if len(contents) > MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=413,
+                detail="File is too large. Maximum size is 25 MB."
+            )
 
         result = agent.process_uploaded_document(
             contents,
@@ -164,10 +232,13 @@ async def upload_document(
             "chunks": result["chunks"],
             "characters": result["characters"]
         }
+    except HTTPException:
+        raise
 
     except Exception as error:
+        print("Upload failed.")
 
         raise HTTPException(
             status_code=500,
-            detail=str(error)
+            detail="Unable to upload the document."
         )
